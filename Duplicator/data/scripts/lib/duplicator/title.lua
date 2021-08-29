@@ -5,7 +5,7 @@ package.path = package.path .. ";data/scripts/lib/?.lua"
 
 Title = { };
 
---Copy
+--Clear
 
 Title.Clear = function(owner, ship)
 	ship:setTitle("", { });

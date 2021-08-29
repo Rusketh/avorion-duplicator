@@ -12,7 +12,7 @@ DefineFlag, ParseFlags, FlagHelper = Duplicator.Util.Arguments.Flags();
 
 --Flags: Copy Content
 
---DefineFlag("Bool", "scripts") ("If set to true, duplication will include the entity's scripts (Only use if you know what your doing).", true);
+DefineFlag("Bool", "scripts") ("If set to true, duplication will include the entity's scripts (Only use if you know what your doing).", false);
 DefineFlag("Bool", "crew", "staff") ("If set to true, duplication will include the ship crew.", false);
 DefineFlag("Bool", "upgrades", "systems") ("If set to true, duplication will include the ships installed upgrades.", false);
 DefineFlag("Bool", "turrets", "weapons", "guns") ("If set to true, duplication will include the ships installed weapons.", false);

@@ -112,7 +112,13 @@ Arguments.List = function(sender, args, sep)
         
         local str, sperated = Arguments.String(sender, args, sep);
         
-        if (not str) then break; end
+        if (not str) then
+
+        	if (sperated) then return nil, sperated; end
+
+        	break;
+
+        end
         
         list[#list+1] = str;
         
@@ -149,11 +155,11 @@ end
 
 --Craft
 
-Arguments.Craft = function(sender, args)
+Arguments.Craft = function(sender, args, sep)
 	
-	local str, err = Arguments.String(sender, args);
+	local str, seperated = Arguments.String(sender, args, sep);
 
-	if (not str or str == "") then return; end
+	if (not str or str == "") then return nil, seperated; end
 
 	local player = Player(sender);
 
@@ -163,7 +169,7 @@ Arguments.Craft = function(sender, args)
 
 	if (not craft) then return nil, "Target can not be aquired whilst player is not inside a craft."; end
 
-	if (str == "m" or str == "me" or str == "self" or str == "craft") then return craft; end
+	if (str == "m" or str == "me" or str == "self" or str == "craft") then return craft, seperated; end
 
 	if (str == "t" or str == "this" or str == "that" or str == "target" or str == "selected") then
 
@@ -171,7 +177,7 @@ Arguments.Craft = function(sender, args)
 
 		if (not craft) then return nil, "Target can not be aquired, no target is selected."; end
 
-		return craft;
+		return craft, seperated;
 
 	end
 
@@ -179,13 +185,49 @@ Arguments.Craft = function(sender, args)
 
 		if (str == ship.name) then
 
-			return ship;
+			return ship, seperated;
 
 		end
 
 	end
 
 	return nil, "Target '" .. str .. "' does not exist in sector.";
+
+end
+
+--List of Craft
+
+Arguments.CraftList = function(sender, args, sep)
+	
+	sep = sep or ",";
+
+	local lk = { };
+
+    local list = { };
+
+    while (true) do
+        
+        local craft, sperated = Arguments.Craft(sender, args, sep);
+        
+        if (not craft) then
+
+        	if (sperated) then return nil, sperated; end
+
+        	break;
+
+        end
+
+        if (lk[craft.id]) then return nil, "Ship '" .. craft.name .. "' is a duplicate entry on the list."; end
+
+        list[#list+1] = craft;
+
+        lk[craft.id] = true;
+        
+        if (not sperated) then break; end
+        
+    end
+        
+    return list, lk;
 
 end
 

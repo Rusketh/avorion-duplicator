@@ -7,6 +7,8 @@ Duplicator = { };
 
 --Import libraries into name space
 
+Duplicator.Plan = include("data/scripts/lib/duplicator/plan");
+
 Duplicator.Scripts = include("data/scripts/lib/duplicator/scripts");
 
 Duplicator.Crew = include("data/scripts/lib/duplicator/crew");

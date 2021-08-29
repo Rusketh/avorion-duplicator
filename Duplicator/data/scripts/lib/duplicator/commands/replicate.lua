@@ -12,7 +12,8 @@ DefineFlag, ParseFlags, FlagHelper = Duplicator.Util.Arguments.Flags();
 
 --Flags: Copy Content
 
---DefineFlag("Bool", "scripts") ("If set to true, replication will include the entity's scripts (Only use if you know what your doing).", true);
+DefineFlag("Bool", "scripts") ("If set to true, replication will include the entity's scripts (Only use if you know what your doing).", false);
+DefineFlag("Bool", "plan", "model", "blocks") ("If set to true, replication will include the ship design itself.", false);
 DefineFlag("Bool", "crew", "staff") ("If set to true, replication will include the ship crew.", false);
 DefineFlag("Bool", "upgrades", "systems") ("If set to true, replication will include the ships installed upgrades.", false);
 DefineFlag("Bool", "turrets", "weapons", "guns") ("If set to true, replication will include the ships installed weapons.", false);
@@ -27,7 +28,7 @@ DefineFlag("Bool", "clear", "reset") ("if set to true the ship will be cleared b
 --Flags: Other
 
 DefineFlag("Craft", "from", "base", "template") ("The craft to replicate from.");
-DefineFlag("Craft", "to", "target", "craft", "ship", "entity", "select", "object") ("The craft to replicate (replace) over.");
+DefineFlag("CraftList", "to", "target", "craft", "ship", "entity", "select", "object") ("The a list of ships to replace.");
 
 return function(sender, commandName, ...)
 
@@ -55,65 +56,81 @@ return function(sender, commandName, ...)
 
 	--Get the entity to copy to.
 
-	local to = flags.to;
+	local to = flags.to or { };
 
-	if (player and not to) then
+	if (player and not to[1]) then
 
 		if (player.craft and player.craft.selectedObject) then
 
-			to = player.craft.selectedObject;
+			to = { player.craft.selectedObject };
 
 		end
 
 	end
 
-	if (not to) then return 0, "", "No craft selected to copy to"; end
+	if (not to[1]) then return 0, "", "No craft selected to copy to"; end
 
-	--Perform copy operation.
+	local names = { };
 
-	if (flags.scripts or flags.exact) then
-		if (flags.clear ~= false) then Duplicator.Scripts.Clear(player, to); end;
-		Duplicator.Scripts.Copy(player, from, to);
+	for _, copy in pairs( to ) do
+
+		if (copy.id ~= from.id) then
+
+			--Perform copy operation.
+
+			if (flags.plan or flags.exact) then
+				Duplicator.Plan.Copy(player, from, copy);
+			end
+
+			if (flags.scripts or flags.exact) then
+				if (flags.clear ~= false) then Duplicator.Scripts.Clear(player, copy); end;
+				Duplicator.Scripts.Copy(player, from, copy);
+			end
+
+			if (flags.crew or flags.exact) then
+				if (flags.clear) then Duplicator.Crew.Clear(player, copy); end;
+				Duplicator.Crew.Copy(player, from, copy);
+			end
+
+			if (flags.upgrades or flags.exact) then
+				if (flags.clear) then Duplicator.Upgrades.Clear(player, copy); end;
+				Duplicator.Upgrades.Copy(player, from, copy);
+			end
+
+			if (flags.turrets or flags.exact) then
+				if (flags.clear) then Duplicator.Turrets.Clear(player, copy); end;
+				Duplicator.Turrets.Copy(player, from, copy);
+			end
+
+			if (flags.torpedoes or flags.exact) then
+				if (flags.clear ~=se) then Duplicator.Torpedoes.Clear(player, copy); end;
+				Duplicator.Torpedoes.Copy(player, from, copy);
+			end
+
+			if (flags.fighters or flags.exact) then
+				if (flags.clear) then Duplicator.Fighters.Clear(player, copy); end;
+				Duplicator.Fighters.Copy(player, from, copy);
+			end
+
+			if (flags.cargo or flags.exact) then
+				if (flags.clear) then Duplicator.Cargo.Clear(player, copy); end;
+				Duplicator.Cargo.Copy(player, from, copy);
+			end
+
+			if (flags.icon or flags.exact) then
+				Duplicator.Icon.Copy(player, from, copy);
+			end
+
+			if (flags.title or flags.exact) then
+				Duplicator.Title.Copy(player, from, copy);
+			end
+
+			names[#names+1] = "'" .. copy.name .. "'";
+
+		end
+
 	end
 
-	if (flags.crew or flags.exact) then
-		if (flags.clear) then Duplicator.Crew.Clear(player, to); end;
-		Duplicator.Crew.Copy(player, from, to);
-	end
+	return 1, "", "Finished: Copied build '" .. from.name .. "' to " .. table.concat(names, ", ");
 
-	if (flags.upgrades or flags.exact) then
-		if (flags.clear) then Duplicator.Upgrades.Clear(player, to); end;
-		Duplicator.Upgrades.Copy(player, from, to);
-	end
-
-	if (flags.turrets or flags.exact) then
-		if (flags.clear) then Duplicator.Turrets.Clear(player, to); end;
-		Duplicator.Turrets.Copy(player, from, to);
-	end
-
-	if (flags.torpedoes or flags.exact) then
-		if (flags.clear ~=se) then Duplicator.Torpedoes.Clear(player, to); end;
-		Duplicator.Torpedoes.Copy(player, from, to);
-	end
-
-	if (flags.fighters or flags.exact) then
-		if (flags.clear) then Duplicator.Fighters.Clear(player, to); end;
-		Duplicator.Fighters.Copy(player, from, to);
-	end
-
-	if (flags.cargo or flags.exact) then
-		if (flags.clear) then Duplicator.Cargo.Clear(player, to); end;
-		Duplicator.Cargo.Copy(player, from, to);
-	end
-
-	if (flags.icon or flags.exact) then
-		Duplicator.Icon.Copy(player, from, to);
-	end
-
-	if (flags.title or flags.exact) then
-		Duplicator.Title.Copy(player, from, to);
-	end
-
-	return 1, "", "Finished: Copied build '" .. from.name .. "' to '" .. to.name .. "'";
-
-end, FlagHelper
+end, FlagHelper;
