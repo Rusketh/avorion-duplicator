@@ -3,11 +3,11 @@ package.path = package.path .. ";data/scripts/lib/?.lua"
 
 --Begin
 
-Torpedos = { };
+Torpedoes = { };
 
 --Copy
 
-Torpedos.Copy = function(owner, ship, clone)
+Torpedoes.Copy = function(owner, ship, clone)
 	
 	local launcher = TorpedoLauncher(ship);
 
@@ -32,4 +32,4 @@ end
 
 --Exports
 
-return Torpedos;
+return Torpedoes;

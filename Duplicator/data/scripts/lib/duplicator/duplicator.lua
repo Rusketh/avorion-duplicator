@@ -15,7 +15,7 @@ Duplicator.Upgrades = include("data/scripts/lib/duplicator/upgrades");
 
 Duplicator.Turrets = include("data/scripts/lib/duplicator/turrets");
 
-Duplicator.Torpedos = include("data/scripts/lib/duplicator/torpedos");
+Duplicator.Torpedoes = include("data/scripts/lib/duplicator/torpedoes");
 
 Duplicator.Fighters = include("data/scripts/lib/duplicator/fighters");
 

@@ -1,6 +1,11 @@
 --Package
 package.path = package.path .. ";data/scripts/lib/?.lua"
 
+-- Avoid Namespace conflict.
+
+local _Crew = Crew;
+
+
 --Begin
 
 Crew = { };
@@ -84,7 +89,7 @@ end
 
 Crew.Clone = function(crew)
 
-	local copy = Crew();
+	local copy = _Crew();
 
 	if (crew) then
 

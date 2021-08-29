@@ -17,6 +17,6 @@ function getDescription()
 end
 
 function getHelp()
-    return "Creates a duplicate of a ship. Usage: '/duplicate [...names(,)] [...flag value]' Flags: scripts, crew, upgrades, turrets, torpedos, fighters, cargo, icon, title, exact, alliance, direction, target."
+    return "Creates a duplicate of a ship. Usage: '/duplicate [...names(,)] [...flag value]' Flags: scripts, crew, upgrades, turrets, torpedoes, fighters, cargo, icon, title, exact, alliance, direction, target."
 end
 

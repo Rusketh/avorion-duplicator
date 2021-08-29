@@ -60,7 +60,7 @@ Duplicator.Ship.Duplicate = function(ship, owner, name, position, options)
 
 	if (options.Turrets ) then Duplicator.Turrets.Copy(owner, ship, clone); end
 
-	if (options.Torpedos ) then Duplicator.Torpedos.Copy(owner, ship, clone); end
+	if (options.Torpedoes ) then Duplicator.Torpedoes.Copy(owner, ship, clone); end
 
 	if (options.Fighters ) then Duplicator.Fighters.Copy(owner, ship, clone); end
 

@@ -16,7 +16,7 @@ DefineFlag("Bool", "scripts");
 DefineFlag("Bool", "crew", "staff");
 DefineFlag("Bool", "upgrades", "systems");
 DefineFlag("Bool", "turrets", "weapons", "guns");
-DefineFlag("Bool", "torpedos", "warheads", "bombs", "nukes");
+DefineFlag("Bool", "torpedoes", "warheads", "bombs", "nukes");
 DefineFlag("Bool", "fighters", "shuttles", "jets");
 DefineFlag("Bool", "cargo", "stuff", "items", "inventory", "goods");
 DefineFlag("Bool", "icon");
@@ -55,31 +55,43 @@ return function(sender, commandName, ...)
 	local options = { };
 
 	options.Scripts = true;
-	if (flags.scripts ~= nil or flags.exact) then options.Scripts = flags.scripts; end
+	if (flags.scripts ~= nil) then options.Scripts = flags.scripts; end
 
 	options.Crew = false;
-	if (flags.crew ~= nil or flags.exact) then options.Crew = flags.crew; end
+	if (flags.crew ~= nil) then options.Crew = flags.crew; end
 
 	options.Upgrades = false;
-	if (flags.upgrades ~= nil or flags.exact) then options.Upgrades = flags.upgrades; end
+	if (flags.upgrades ~= nil) then options.Upgrades = flags.upgrades; end
 
 	options.Turrets = false;
-	if (flags.turrets ~= nil or flags.exact) then options.Turrets = flags.turrets; end
+	if (flags.turrets ~= nil) then options.Turrets = flags.turrets; end
 
-	options.Torpedos = false;
-	if (flags.torpedos ~= nil or flags.exact) then options.Torpedos = flags.torpedos; end
+	options.Torpedoes = false;
+	if (flags.torpedoes ~= nil) then options.Torpedoes = flags.torpedoes; end
 
 	options.Fighters = false;
-	if (flags.fighters ~= nil or flags.exact) then options.Fighters = flags.fighters; end
+	if (flags.fighters ~= nil) then options.Fighters = flags.fighters; end
 
 	options.Cargo = false;
-	if (flags.cargo ~= nil or flags.exact) then options.Cargo = flags.cargo; end
+	if (flags.cargo ~= nil) then options.Cargo = flags.cargo; end
 
 	options.Icon = true;
-	if (flags.icon ~= nil or flags.exact) then options.Icon = flags.icon; end
+	if (flags.icon ~= nil) then options.Icon = flags.icon; end
 
 	options.Title = true;
-	if (flags.title ~= nil or flags.exact) then options.Title = flags.title; end
+	if (flags.title ~= nil) then options.Title = flags.title; end
+
+	if (flags.exact) then
+		options.Scripts = true;
+		options.Crew = true;
+		options.Upgrades = true;
+		options.Turrets = true;
+		options.Torpedoes = true;
+		options.Fighters = true;
+		options.Cargo = true;
+		options.Icon = true;
+		options.Title = true;
+	end
 
 	--Get the player who will own this object.
 
