@@ -166,7 +166,7 @@ return function(sender, commandName, ...)
 
 			pos = position;
 
-			clone.orientation = ship.orientation;
+			ship.orientation = craft.orientation;
 
 			Util.SendMessage(sender, "", 0, "Spawned duplicate '" .. name .. "' of '" .. craft.name .. "'");
 
