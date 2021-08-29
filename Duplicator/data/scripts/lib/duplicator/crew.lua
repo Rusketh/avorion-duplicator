@@ -85,6 +85,14 @@ Crew.Populate = function(crew, requirments, managment)
 	return crew;
 end
 
+--Clear
+
+Crew.Clear = function(owner, ship)
+	
+	if (ship.crew) then ship.crew:Clear(); end
+	
+end
+
 --Clone
 
 Crew.Clone = function(crew)

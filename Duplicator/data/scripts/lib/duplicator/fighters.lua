@@ -5,6 +5,16 @@ package.path = package.path .. ";data/scripts/lib/?.lua"
 
 Fighters = { };
 
+--Clear
+
+Fighters.Clear = function(owner, ship)
+	
+	local hangar = Hangar(ship);
+
+	if (hangar) then hangar:clear(); end
+	
+end
+
 --Copy
 
 Fighters.Copy = function(owner, ship, clone)

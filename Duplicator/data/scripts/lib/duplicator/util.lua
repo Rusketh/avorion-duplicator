@@ -14,11 +14,17 @@ Util.Arguments = include("data/scripts/lib/duplicator/arguments");
 
 Util.Arguments.Flags = function()
 	
+	local _defaults = { };
+
+	local _flags = { };
+
 	local _all = { };
 
 	return function(type, name, ...)
 
 		local flag = { name = name, type = type, func = Util.Arguments[type] };
+
+		_flags[name] = flag;
 
 		for _, alias in pairs({ name, ... }) do
 
@@ -26,9 +32,23 @@ Util.Arguments.Flags = function()
 
 		end
 
+		return function(description, default)
+			flag.description, flag.default = description, default;
+
+			_defaults[flag.name] = default;
+		end
+
 	end, function(sender, args)
 
 		local values = { };
+
+		local duplicates = { };
+
+		for k, v in pairs(_defaults) do
+
+			values[k] = v;
+
+		end
 
 		while (true) do
 
@@ -40,7 +60,7 @@ Util.Arguments.Flags = function()
 
 			if (not flag) then return nil, "Invalid flag '" .. key .. "'"; end
 
-			if (values[flag.name] ~= nil) then return nil, "Duplicate flag '" .. key .. "'"; end 
+			if (duplicates[flag.name]) then return nil, "Duplicate flag '" .. key .. "'"; end 
 
 			local value, error = flag.func(sender, args);
 
@@ -50,9 +70,31 @@ Util.Arguments.Flags = function()
 
 			values[key] = value;
 
+			duplicates[flag.name] = true;
+
 		end
 
 		return values;
+
+	end, function(format, format2)
+		
+		format = format or " - %s: %s";
+
+		format2 = format2 or "%s, '%s' by default.";
+
+		local lines = { };
+
+		for _, flag in pairs(_flags) do
+
+			local line = string.format(format, flag.name, flag.description or "");
+
+			if (flag.default ~= nil) then line = string.format(format2, line, tostring(flag.default)); end
+			
+			lines[#lines+1] = line;
+
+		end
+
+		return table.concat( lines, "\n");
 
 	end;
 

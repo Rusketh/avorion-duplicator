@@ -4,18 +4,36 @@ package.path = package.path .. ";data/scripts/lib/?.lua"
 
 --Import Command
 
-Command = include("/data/scripts/lib/duplicator/commands/replicate");
+Command, Helper = include("/data/scripts/lib/duplicator/commands/replicate");
 
---Execute Command
-
-function execute(sender, commandName, ...)
-	return Command(sender, commandName, ...);
-end
+--Description
 
 function getDescription()
     return "Copies your ship load out to another ship."
 end
 
+--Help
+
 function getHelp()
-    return "Copies your ship load out to another ship. Usage: '/replicate [...flag value]' Flags: scripts, crew, upgrades, turrets, torpedoes, fighters, cargo, icon, title, exact."
+    
+    return table.concat( {
+
+        "Description: " .. getDescription(),
+
+        "Usage: '/replicate [...flag value]'",
+
+        "Flags:", Helper()
+
+    }, "\n");
+
+end
+
+--Execute Command
+
+function execute(sender, commandName, a, ...)
+
+    if (a == "?") then return 1, "", getHelp(); end
+
+    return Command(sender, commandName, a, ...);
+
 end

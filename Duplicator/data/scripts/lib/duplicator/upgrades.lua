@@ -5,6 +5,16 @@ package.path = package.path .. ";data/scripts/lib/?.lua"
 
 Upgrades = { };
 
+--Clear
+
+Upgrades.Clear = function(owner, ship)
+	
+	local shipSystems = ShipSystem(ship);
+	
+	if (shipSystems) then shipSystems:clear(); end
+
+end
+
 --Copy
 
 Upgrades.Copy = function(owner, ship, clone)

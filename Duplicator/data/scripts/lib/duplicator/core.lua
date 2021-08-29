@@ -52,7 +52,7 @@ Duplicator.Ship.Duplicate = function(ship, owner, name, position, options)
 
 	options = options or { };
 
-	if (options.Scripts ) then Duplicator.Scripts.Copy(owner, ship, clone); end
+	--if (options.Scripts ) then Duplicator.Scripts.Copy(owner, ship, clone); end
 
 	if (options.Crew ) then Duplicator.Crew.Copy(owner, ship, clone); end
 

@@ -8,25 +8,26 @@ Duplicator = include("data/scripts/lib/duplicator/core");
 
 --Flags
 
-DefineFlag, ParseFlags = Util.Arguments.Flags();
+DefineFlag, ParseFlags, FlagHelper = Duplicator.Util.Arguments.Flags();
 
 --Flags: Copy Content
 
-DefineFlag("Bool", "scripts");
-DefineFlag("Bool", "crew", "staff");
-DefineFlag("Bool", "upgrades", "systems");
-DefineFlag("Bool", "turrets", "weapons", "guns");
-DefineFlag("Bool", "torpedoes", "warheads", "bombs", "nukes");
-DefineFlag("Bool", "fighters", "shuttles", "jets");
-DefineFlag("Bool", "cargo", "stuff", "items", "inventory", "goods");
-DefineFlag("Bool", "icon");
-DefineFlag("Bool", "title", "class");
-DefineFlag("Bool", "exact", "everything", "all");
+--DefineFlag("Bool", "scripts") ("If set to true, replication will include the entity's scripts (Only use if you know what your doing).", true);
+DefineFlag("Bool", "crew", "staff") ("If set to true, replication will include the ship crew.", false);
+DefineFlag("Bool", "upgrades", "systems") ("If set to true, replication will include the ships installed upgrades.", false);
+DefineFlag("Bool", "turrets", "weapons", "guns") ("If set to true, replication will include the ships installed weapons.", false);
+DefineFlag("Bool", "torpedoes", "warheads", "bombs", "nukes") ("If set to true, replication will include the ships torpedo shaft contents.", false);
+DefineFlag("Bool", "fighters", "shuttles", "jets") ("If set to true, replication will include the ships fighter squads and hangar bay contents.", false);
+DefineFlag("Bool", "cargo", "stuff", "items", "inventory", "goods") ("If set to true, replication will include the ships cargo hangar content.", false);
+DefineFlag("Bool", "icon") ("If set to true, replication will include the ships chosen icon.", false);
+DefineFlag("Bool", "title", "class") ("If set to true, replication will include the ships class name.", false);
+DefineFlag("Bool", "exact", "everything", "all") ("if set to true the ship will be duplicated exactly with turrets, crew, systems etc.", false);
+DefineFlag("Bool", "clear", "reset") ("if set to true the ship will be cleared before the duplication.", false);
 
 --Flags: Other
 
-DefineFlag("Craft", "from", "base", "template");
-DefineFlag("Craft", "to", "target", "craft", "ship", "entity", "select", "object");
+DefineFlag("Craft", "from", "base", "template") ("The craft to replicate from.");
+DefineFlag("Craft", "to", "target", "craft", "ship", "entity", "select", "object") ("The craft to replicate (replace) over.");
 
 return function(sender, commandName, ...)
 
@@ -35,49 +36,6 @@ return function(sender, commandName, ...)
 	local flags, error = ParseFlags(sender, args);
 
 	if (error) then return 0, "", error; end
-
-	--Set up options for replicating.
-
-	local options = { };
-
-	options.Scripts = true;
-	if (flags.scripts ~= nil) then options.Scripts = flags.scripts; end
-
-	options.Crew = false;
-	if (flags.crew ~= nil) then options.Crew = flags.crew; end
-
-	options.Upgrades = false;
-	if (flags.upgrades ~= nil) then options.Upgrades = flags.upgrades; end
-
-	options.Turrets = false;
-	if (flags.turrets ~= nil) then options.Turrets = flags.turrets; end
-
-	options.Torpedoes = false;
-	if (flags.torpedoes ~= nil) then options.Torpedoes = flags.torpedoes; end
-
-	options.Fighters = false;
-	if (flags.fighters ~= nil) then options.Fighters = flags.fighters; end
-
-	options.Cargo = false;
-	if (flags.cargo ~= nil) then options.Cargo = flags.cargo; end
-
-	options.Icon = true;
-	if (flags.icon ~= nil) then options.Icon = flags.icon; end
-
-	options.Title = true;
-	if (flags.title ~= nil) then options.Title = flags.title; end
-
-	if (flags.exact) then
-		options.Scripts = true;
-		options.Crew = true;
-		options.Upgrades = true;
-		options.Turrets = true;
-		options.Torpedoes = true;
-		options.Fighters = true;
-		options.Cargo = true;
-		options.Icon = true;
-		options.Title = true;
-	end
 
 	--Get the player who will own this object.
 
@@ -113,24 +71,49 @@ return function(sender, commandName, ...)
 
 	--Perform copy operation.
 
-	if (options.Scripts ) then Duplicator.Scripts.Copy(player, from, to); end
+	if (flags.scripts or flags.exact) then
+		if (flags.clear ~= false) then Duplicator.Scripts.Clear(player, to); end;
+		Duplicator.Scripts.Copy(player, from, to);
+	end
 
-	if (options.Crew ) then Duplicator.Crew.Copy(player, from, to); end
+	if (flags.crew or flags.exact) then
+		if (flags.clear) then Duplicator.Crew.Clear(player, to); end;
+		Duplicator.Crew.Copy(player, from, to);
+	end
 
-	if (options.Upgrades ) then Duplicator.Upgrades.Copy(player, from, to); end
+	if (flags.upgrades or flags.exact) then
+		if (flags.clear) then Duplicator.Upgrades.Clear(player, to); end;
+		Duplicator.Upgrades.Copy(player, from, to);
+	end
 
-	if (options.Turrets ) then Duplicator.Turrets.Copy(player, from, to); end
+	if (flags.turrets or flags.exact) then
+		if (flags.clear) then Duplicator.Turrets.Clear(player, to); end;
+		Duplicator.Turrets.Copy(player, from, to);
+	end
 
-	if (options.Torpedoes ) then Duplicator.Torpedoes.Copy(player, from, to); end
+	if (flags.torpedoes or flags.exact) then
+		if (flags.clear ~=se) then Duplicator.Torpedoes.Clear(player, to); end;
+		Duplicator.Torpedoes.Copy(player, from, to);
+	end
 
-	if (options.Fighters ) then Duplicator.Fighters.Copy(player, from, to); end
+	if (flags.fighters or flags.exact) then
+		if (flags.clear) then Duplicator.Fighters.Clear(player, to); end;
+		Duplicator.Fighters.Copy(player, from, to);
+	end
 
-	if (options.Cargo ) then Duplicator.Cargo.Copy(player, from, to); end
+	if (flags.cargo or flags.exact) then
+		if (flags.clear) then Duplicator.Cargo.Clear(player, to); end;
+		Duplicator.Cargo.Copy(player, from, to);
+	end
 
-	if (options.Icon ) then Duplicator.Icon.Copy(player, from, to); end
+	if (flags.icon or flags.exact) then
+		Duplicator.Icon.Copy(player, from, to);
+	end
 
-	if (options.Title ) then Duplicator.Title.Copy(player, from, to); end
+	if (flags.title or flags.exact) then
+		Duplicator.Title.Copy(player, from, to);
+	end
 
 	return 1, "", "Finished: Copied build '" .. from.name .. "' to '" .. to.name .. "'";
 
-end
+end, FlagHelper

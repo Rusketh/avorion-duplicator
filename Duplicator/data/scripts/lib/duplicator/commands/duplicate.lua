@@ -8,27 +8,27 @@ Duplicator = include("data/scripts/lib/duplicator/core");
 
 --Flags
 
-DefineFlag, ParseFlags = Util.Arguments.Flags();
+DefineFlag, ParseFlags, FlagHelper = Duplicator.Util.Arguments.Flags();
 
 --Flags: Copy Content
 
-DefineFlag("Bool", "scripts");
-DefineFlag("Bool", "crew", "staff");
-DefineFlag("Bool", "upgrades", "systems");
-DefineFlag("Bool", "turrets", "weapons", "guns");
-DefineFlag("Bool", "torpedoes", "warheads", "bombs", "nukes");
-DefineFlag("Bool", "fighters", "shuttles", "jets");
-DefineFlag("Bool", "cargo", "stuff", "items", "inventory", "goods");
-DefineFlag("Bool", "icon");
-DefineFlag("Bool", "title", "class");
-DefineFlag("Bool", "exact", "everything", "all");
+--DefineFlag("Bool", "scripts") ("If set to true, duplication will include the entity's scripts (Only use if you know what your doing).", true);
+DefineFlag("Bool", "crew", "staff") ("If set to true, duplication will include the ship crew.", false);
+DefineFlag("Bool", "upgrades", "systems") ("If set to true, duplication will include the ships installed upgrades.", false);
+DefineFlag("Bool", "turrets", "weapons", "guns") ("If set to true, duplication will include the ships installed weapons.", false);
+DefineFlag("Bool", "torpedoes", "warheads", "bombs", "nukes") ("If set to true, duplication will include the ships torpedo shaft contents.", false);
+DefineFlag("Bool", "fighters", "shuttles", "jets") ("If set to true, duplication will include the ships fighter squads and hangar bay contents.", false);
+DefineFlag("Bool", "cargo", "stuff", "items", "inventory", "goods") ("If set to true, duplication will include the ships cargo hangar content.", false);
+DefineFlag("Bool", "icon") ("If set to true, duplication will include the ships chosen icon.", false);
+DefineFlag("Bool", "title", "class") ("If set to true, duplication will include the ships class name.", false);
+DefineFlag("Bool", "exact", "everything", "all") ("if set to true the ship will be duplicated exactly with turrets, crew, systems etc.", false);
 
 --Flags: Other
 
-DefineFlag("Number", "offset", "off");
-DefineFlag("Bool", "alliance", "faction");
-DefineFlag("Direction", "direction", "dir");
-DefineFlag("Craft", "target", "craft", "ship", "entity", "select", "object");
+DefineFlag("Number", "offset", "off") ("The amount of additional space between the duplicated ships, when placed.");
+DefineFlag("Bool", "alliance", "faction") ("If set to true, the duplicates will be owned by the players alliance.");
+DefineFlag("Direction", "direction", "dir") ("The direction in witch to line up the duplicated ships.", false);
+DefineFlag("Craft", "target", "craft", "ship", "entity", "select", "object") ("The ship or entity to duplicate.");
 
 --Command Function
 
@@ -54,44 +54,15 @@ return function(sender, commandName, ...)
 
 	local options = { };
 
-	options.Scripts = true;
-	if (flags.scripts ~= nil) then options.Scripts = flags.scripts; end
-
-	options.Crew = false;
-	if (flags.crew ~= nil) then options.Crew = flags.crew; end
-
-	options.Upgrades = false;
-	if (flags.upgrades ~= nil) then options.Upgrades = flags.upgrades; end
-
-	options.Turrets = false;
-	if (flags.turrets ~= nil) then options.Turrets = flags.turrets; end
-
-	options.Torpedoes = false;
-	if (flags.torpedoes ~= nil) then options.Torpedoes = flags.torpedoes; end
-
-	options.Fighters = false;
-	if (flags.fighters ~= nil) then options.Fighters = flags.fighters; end
-
-	options.Cargo = false;
-	if (flags.cargo ~= nil) then options.Cargo = flags.cargo; end
-
-	options.Icon = true;
-	if (flags.icon ~= nil) then options.Icon = flags.icon; end
-
-	options.Title = true;
-	if (flags.title ~= nil) then options.Title = flags.title; end
-
-	if (flags.exact) then
-		options.Scripts = true;
-		options.Crew = true;
-		options.Upgrades = true;
-		options.Turrets = true;
-		options.Torpedoes = true;
-		options.Fighters = true;
-		options.Cargo = true;
-		options.Icon = true;
-		options.Title = true;
-	end
+	options.Scripts = flags.exact or flags.scripts;
+	options.Crew = flags.exact or flags.crew;
+	options.Upgrades = flags.exact or flags.upgrades;
+	options.Turrets = flags.exact or flags.turrets;
+	options.Torpedoes = flags.exact or flags.torpedoes;
+	options.Fighters = flags.exact or flags.fighters;
+	options.Cargo = flags.exact or flags.cargo;
+	options.Icon = flags.exact or flags.icon;
+	options.Title = flags.exact or flags.title;
 
 	--Get the player who will own this object.
 
@@ -141,37 +112,37 @@ return function(sender, commandName, ...)
 
 	local direction = craft.position.look;
 
-	local step = craft.size.y + offset;
+	local step = craft.size.x + offset + 1;
 
 	if (dir == "right") then
 
 		direction = craft.position.right;
 
-		step = craft.size.x + offset;
+		step = craft.size.y + offset + 1;
 
 	elseif (dir == "backward") then
 
 		direction = craft.position.look * amv;
 
-		step = -(craft.size.x + offset);
+		step = -(craft.size.y + offset + 1);
 
 	elseif (dir == "left") then
 
 		direction = craft.position.right * amv;
 
-		step = -(craft.size.y + offset);
+		step = -(craft.size.x + offset + 1);
 
 	elseif (dir == "up") then
 
 		direction = craft.position.up;
 
-		step = craft.size.z + offset;
+		step = craft.size.z + offset + 1;
 
 	elseif (dir == "down") then
 
 		direction = craft.position.up * amv;
 
-		step = -(craft.size.z + offset);
+		step = -(craft.size.z + offset + 1);
 
 	end
 	
@@ -195,6 +166,8 @@ return function(sender, commandName, ...)
 
 			pos = position;
 
+			clone.orientation = ship.orientation;
+
 			Util.SendMessage(sender, "", 0, "Spawned duplicate '" .. name .. "' of '" .. craft.name .. "'");
 
 			ships[#ships+1] = ship;
@@ -205,4 +178,4 @@ return function(sender, commandName, ...)
 
 	return 1, "", "Finished: spawned " .. #ships .. " / " .. #names .. " duplicates of '" .. craft.name .. "'";
 
-end
+end, FlagHelper;

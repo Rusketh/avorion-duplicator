@@ -5,6 +5,16 @@ package.path = package.path .. ";data/scripts/lib/?.lua"
 
 Cargo = { };
 
+--Clear
+
+Cargo.Clear = function(owner, ship)
+	
+	local cargobay = CargoBay(ship);
+
+	if (cargobay) then cargobay:clear(); end
+	
+end
+
 --Copy
 
 Cargo.Copy = function(owner, ship, clone)

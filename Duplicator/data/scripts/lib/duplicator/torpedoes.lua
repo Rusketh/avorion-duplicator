@@ -5,6 +5,16 @@ package.path = package.path .. ";data/scripts/lib/?.lua"
 
 Torpedoes = { };
 
+--Clear
+
+Torpedoes.Clear = function(owner, ship)
+	
+	local launcher = TorpedoLauncher(ship);
+
+	if (launcher) then launcher:clear(); end
+	
+end
+
 --Copy
 
 Torpedoes.Copy = function(owner, ship, clone)
